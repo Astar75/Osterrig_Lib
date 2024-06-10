@@ -14,6 +14,8 @@ class BatteryParserTest {
             0x34, 0x31
         )
 
+        println(String(source))
+
         val parser = BatteryParser()
         val expectedBatteryCharge = BatteryData(55)
         val actualBatteryCharge = parser.parse(source)

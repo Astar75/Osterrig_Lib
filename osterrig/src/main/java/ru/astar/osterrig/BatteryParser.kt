@@ -2,7 +2,7 @@ package ru.astar.osterrig
 
 import ru.astar.osterrig.exceptions.ParseDataException
 
-class BatteryParser: Parser<ByteArray, BatteryData> {
+class BatteryParser : Parser<ByteArray, BatteryData> {
     companion object {
         const val SEPARATOR = "#"
     }
@@ -14,6 +14,10 @@ class BatteryParser: Parser<ByteArray, BatteryData> {
         }
         val items = string.split(SEPARATOR)
         val charge = items[0].toInt()
-        return BatteryData(charge)
+        val timeUntilDischarge = items[1].toInt()
+        val temperatureCelsius = items[2].toFloat()
+
+
+        return BatteryData(charge = charge, temperature = Temperature(temperatureCelsius))
     }
 }

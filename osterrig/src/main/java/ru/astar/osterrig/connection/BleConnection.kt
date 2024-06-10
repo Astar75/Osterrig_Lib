@@ -8,14 +8,13 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import android.content.Context
-import android.util.Log
-import ru.astar.osterrig.commands.Command
 import ru.astar.osterrig.Constants
 import ru.astar.osterrig.ReceiveDataCallback
-import ru.astar.osterrig.extensions.ConnectionException
-import ru.astar.osterrig.extensions.NotSupportedException
+import ru.astar.osterrig.entities.Command
 import ru.astar.osterrig.debug
 import ru.astar.osterrig.err
+import ru.astar.osterrig.exceptions.ConnectionException
+import ru.astar.osterrig.exceptions.NotSupportedException
 import java.util.LinkedList
 import java.util.Queue
 import java.util.UUID
@@ -158,13 +157,16 @@ abstract class BleConnection(
     }
 
     protected fun sendCommand(command: Command) {
+        if (bluetoothGatt == null) {
+            err("[$device] no connection for sending command!")
+            return
+        }
         commandsQueue.add(command.array)
         debug("command queue size ${commandsQueue.size}")
         if (!pending) sendNextCommand()
     }
 
     private fun sendNextCommand() {
-        Log.i("BleConnection", "sendNextCommand: before pending $pending")
         if (pending) {
             err("[$device] error! operation is pending!")
             return
@@ -178,9 +180,6 @@ abstract class BleConnection(
         pending = true
 
         writeData(command)
-
-        Log.i("BleConnection", "sendNextCommand: after pending $pending")
-
     }
 
     private fun endCommand() {
@@ -215,6 +214,7 @@ abstract class BleConnection(
         if (bluetoothGatt != null) {
             throw IllegalStateException("You cannot change the configuration while connected.")
         }
+
         config.commandServiceUuid?.let { commandServiceUuid = it }
         config.batteryServiceUuid?.let { batteryServiceUuid = it }
         config.commandSentUuid?.let { sentCommandUuid = it }

@@ -9,8 +9,8 @@ class RgbcwColor : AbstractColor {
         green,
         blue
     ) {
-        require(red in 0..255) { "Cold value must be in range 0..255" }
-        require(green in 0..255) { "Warm value must be in range 0..255" }
+        require(red in 0x0..0xFF) { "Cold value ($cold) must be in range 0..255" }
+        require(green in 0x0..0xFF) { "Warm value ($warm) must be in range 0..255" }
 
         this.cold = cold
         this.warm = warm
@@ -24,9 +24,9 @@ class RgbcwColor : AbstractColor {
     override val rgb: Int
         get() {
             val sum = cold + warm
-            val r = (red + sum).coerceAtMost(255)
-            val g = (green + sum).coerceAtMost(255)
-            val b = (blue + sum).coerceAtMost(255)
+            val r = (red + sum).coerceAtMost(0xFF)
+            val g = (green + sum).coerceAtMost(0xFF)
+            val b = (blue + sum).coerceAtMost(0xFF)
             return pack(r, g, b)
         }
 

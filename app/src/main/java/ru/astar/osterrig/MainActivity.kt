@@ -10,15 +10,16 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ru.astar.osterrig.lamps.Lamp
-import ru.astar.osterrig.entities.RgbColor
-import ru.astar.osterrig.lamps.Sirius
 import ru.astar.osterrig.databinding.ActivityMainBinding
+import ru.astar.osterrig.entities.RgbColor
+import ru.astar.osterrig.lamps.Lamp
+import ru.astar.osterrig.lamps.Sirius
 import java.nio.ByteBuffer
 import kotlin.random.Random
 
@@ -75,11 +76,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            buttonReadState.setOnClickListener {
+                val sb = StringBuilder()
+                sb.append(sirius.state.color).append("\n")
+                sb.append(sirius.state.brightness).append("\n")
+                showAlert(sb.toString())
+            }
+
             sbHue.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(
                     seekBar: SeekBar?,
                     progress: Int,
-                    fromUser: Boolean
+                    fromUser: Boolean,
                 ) {
                     val hsv = FloatArray(3)
                     hsv[0] = progress.toFloat()
@@ -100,8 +108,18 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 }
-            } )
+            })
         }
+    }
+
+    private fun showAlert(message: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Сообщение")
+            .setMessage(message)
+            .setPositiveButton("OK") { d, _ ->
+                d.dismiss()
+            }
+            .show()
     }
 
     private fun createDevice(address: String): BluetoothDevice {

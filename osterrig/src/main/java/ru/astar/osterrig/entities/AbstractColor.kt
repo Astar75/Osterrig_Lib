@@ -12,9 +12,9 @@ abstract class AbstractColor {
     }
 
     constructor(red: Int, green: Int, blue: Int) {
-        require(red in 0..255) { "Red value must be in range 0..255" }
-        require(green in 0..255) { "Green value must be in range 0..255" }
-        require(blue in 0..255) { "Blue value must be in range 0..255" }
+        require(red in 0x0..0xFF) { "Red value ($red) must be in range 0..255" }
+        require(green in 0x0..0xFF) { "Green value ($green) must be in range 0..255" }
+        require(blue in 0x0..0xFF) { "Blue value ($blue) must be in range 0..255" }
 
         this.red = red
         this.green = green
